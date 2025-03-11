@@ -2,24 +2,33 @@ import {
     StyleSheet,
     Text,
     View,
-    TextInput,
-    Pressable,
     Image
 } from 'react-native';
-import React, { useState } from 'react';
 import { Loading, CustomTextInput, CustomButton } from '../component/';
+import { useSelector, useDispatch } from 'react-redux';
+import { setEmail,setIsLoading, setPassword } from '../redux/userSlice';
 
 const LoginPage = ({ navigation }) => {
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [result, setResult] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    console.log(isLoading);
+    // const [email, setEmail] = useState("");
+    // const [password, setPassword] = useState("");
+    // const [result, setResult] = useState("");
+    // const [isLoading, setIsLoading] = useState(false);
+
+    //userSlice içersindeki state bilgilerini almak için useSelector fonksiyonunu kullanıyoruz.
+    //useSelector fonksiyonu ile state içerisindeki user objesini alıyoruz.
+    //user objesinin içerisindeki email ve password bilgilerini almak için destructuring işlemi yapıyoruz.
+    //Bu bilgileri kullanarak login işlemi yapacağız.
+    const { email,password,isLoading} = useSelector((state) => state.user);
+
+    //userSlice içersindeki reducer yapılarını kullanma veya veri gönderme 
+    const dispatch = useDispatch();
+
+
     return (
         <View style={styles.container}>
 
-            <Text style={styles.welcome}>Welcome {result}</Text>
+            <Text style={styles.welcome}>Welcome</Text>
             <Image
                 source={require('../../assets/image/loginicon.png')}
                 style={styles.image} />
@@ -27,7 +36,7 @@ const LoginPage = ({ navigation }) => {
             <CustomTextInput
                 title="Email"
                 isSecureText={false}
-                onChangeText={setEmail}
+                onChangeText={(text) => dispatch(setEmail(text))}
                 value={email}
                 placeholder="Enter your email"
             />
@@ -35,7 +44,7 @@ const LoginPage = ({ navigation }) => {
             <CustomTextInput
                 title="Password"
                 isSecureText={true}
-                onChangeText={setPassword}
+                onChangeText={(password) => dispatch(setPassword(password))}
                 value={password}
                 placeholder="Enter your password"
             />
@@ -44,7 +53,7 @@ const LoginPage = ({ navigation }) => {
             <CustomButton
                 title="Login"
                 setWidth="80%"
-                onPress={() => setIsLoading(true)}
+                onPress={() => dispatch(setIsLoading(true))}
                 buttonColor="lightcoral"
                 pressedButtonColor="lightblue"
             />
@@ -58,7 +67,7 @@ const LoginPage = ({ navigation }) => {
 
 
 
-            {isLoading ? <Loading changeIsLoading={() => setIsLoading(false)} /> : null}
+            {isLoading ? <Loading changeIsLoading={() => dispatch(setIsLoading(false))} /> : null}
 
         </View>
     );
